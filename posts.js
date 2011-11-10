@@ -25,21 +25,40 @@ exports.parseBloggerXml = function(xmlFilePath, callback) {
       if (err) return callback(err);
 
       var posts = []
-        , url;
+        , url
+        , isPost;
 
       if (_.isUndefined(result.entry)) {
         callback(new Error("XML is missing 'entry' array."));
       }
 
       _(result.entry).each(function eachEntryCallback(entry) {
-
+        
         // only want the posts
-        if (_.isUndefined(entry.category['@'])) return;
-        if (_.isUndefined(entry.category['@'].term)) return;
+        // older posts have entry.category['@'].term with a 'scheme' of '...#kind' and a 'term' of '...#post'
+        // but with newer posts, entry.category is an array of multiple objects
+        
+        isPost = false;
+        
+        if (!_.isUndefined(entry.category) && _.isArray(entry.category)) {    // multiple categories
+          for(var cInd=0; cInd < entry.category.length; cInd++) {
+            if (!_.isUndefined(entry.category[cInd]['@'].term)) {
+              if (entry.category[cInd]['@'].term.indexOf("#post") != -1) {    // found one category of #post type
+                isPost = true;
+                break;
+              }              
+            }
+          }
+        }
+        else if (! _.isUndefined(entry.category['@'])) {    // single category
+          if (! _.isUndefined(entry.category['@'].term)) {
+            if (entry.category['@'].term.indexOf("#post") != -1) isPost = true;            
+          }
+        }
 
-        if (entry.category['@'].term.indexOf("#post") != -1 
-        && !_.isUndefined(entry.link)
-        && !_.isUndefined(entry.title['#'])) {
+        if (! isPost) return;
+        
+        if (!_.isUndefined(entry.link) && !_.isUndefined(entry.title['#'])) {
 
           _(entry.link).each(function linkCallback(link) {
             if (_.isUndefined(link['@'])) return;
@@ -47,7 +66,7 @@ exports.parseBloggerXml = function(xmlFilePath, callback) {
 
             if (link.type == 'text/html' && link.href.indexOf(".html") != -1) {
 
-              // it's a post!
+              // it's definitely a post!
               
               // regular protocol, remove querystring
               url = 'http://' + URL.parse(link.href).hostname + URL.parse(link.href).pathname;     // e.g. http://www.site.com/a-blog-post
