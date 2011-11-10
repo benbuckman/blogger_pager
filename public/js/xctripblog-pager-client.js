@@ -12,7 +12,7 @@ window.benLog = function() {
 
 if (typeof jQuery != "undefined") {
   (function($){
-    $(function(){
+    $(document).load(function(){
       benLog("Loaded pager script!");
 
       $('.post').each(function(ind, post) {
