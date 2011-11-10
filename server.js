@@ -24,6 +24,11 @@ exports.runServerWithPosts = function(posts) {
   });
 
 
+  // jsonp needed for cross-domain lookup
+  app.enable("jsonp callback");
+
+
+
   // list all the posts
   app.get('/posts', function(req, res) {
     res.render('posts', {
