@@ -55,6 +55,10 @@ exports.runServerWithPosts = function(posts) {
   });
 
 
+  // return the client-side JS. load w/ <script> tags.
+  // app.get('/')
+
+
   app.listen(3003);
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 };
