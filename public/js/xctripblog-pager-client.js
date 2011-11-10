@@ -12,7 +12,7 @@ window.benLog = function() {
 
 if (typeof jQuery != "undefined") {
   (function($){
-    $(document).load(function(){
+    $(document).ready(function(){
       benLog("Loaded pager script!");
 
       $('.post').each(function(ind, post) {
@@ -47,6 +47,9 @@ if (typeof jQuery != "undefined") {
     });
   })(jQuery);
 }
+else {
+  benLog("missing jQuery");
+}
 
 
 function addPagerForPost(post, data) {
@@ -65,6 +68,8 @@ function addPagerForPost(post, data) {
       + 'next post: <em>' + data.next.title + ' &gt;&gt;</em></a> ');
   }
 
-  $(post).after(pager);
+  benLog('placing pager:', pager);
+
+  $(post).append(pager);
 }
 
