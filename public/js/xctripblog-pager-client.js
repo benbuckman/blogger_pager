@@ -15,34 +15,33 @@ if (typeof jQuery != "undefined") {
     $(function(){
       benLog("Loaded pager script!");
 
-      // try to figure out if it's a single post
-      if ($('.post').size() !== 1) {
-        benLog("Wrong # of posts, doesn't look like a single-post page.");
-        return; 
-      }
+      $('.post').each(function(ind, post) {
+        var postUrl = $(post).find('h3.post-title a').attr('href');
+        benLog('post', ind, postUrl);
 
-      benLog("Looks like a single-post page...");
+        if (postUrl == "" || postUrl == null) return;
 
-      var url = 'http://node.benbuck.net:3003/pager?url=' + escape(document.location.href);
-      benLog(url);
+        var url = 'http://node.benbuck.net:3003/pager?url=' + escape(postUrl);
+        benLog('requesting from', url);
 
-      $.ajax({
-        url: url,
-        dataType: "jsonp",
-        //jsonpCallback: "addPagerForPost",  // not necessary
-        cache: false,
-        timeout: 5000, //500,
+        $.ajax({
+          url: url,
+          dataType: "jsonp",
+          cache: true, // per URL, why not
+          timeout: 5000,
 
-        success: function(data) {
-          benLog('got data:', data);
-          if (typeof data.next != "undefined" || typeof data.previous != "undefined") {
-            addPagerForPost(data);
+          success: function(data) {
+            benLog('got data:', data);
+            if (typeof data.next != "undefined" || typeof data.previous != "undefined") {
+              addPagerForPost(post, data);
+            }
+          },
+
+          error: function(jqXHR, textStatus, errorThrown) {
+            benLog('error ', textStatus, errorThrown, 'at url:', url);
           }
-        },
+        });
 
-        error: function(jqXHR, textStatus, errorThrown) {
-          benLog('error ', textStatus, errorThrown, 'at url:', url);
-        }
       });
 
     });
@@ -50,7 +49,7 @@ if (typeof jQuery != "undefined") {
 }
 
 
-function addPagerForPost(data) {
+function addPagerForPost(post, data) {
   benLog('addPagerForPost:', data);
 
   var pager = $('<div></div>');
@@ -66,6 +65,6 @@ function addPagerForPost(data) {
       + 'next post: <em>' + data.next.title + ' &gt;&gt;</em></a> ');
   }
 
-  $('.post').after(pager);
+  $(post).after(pager);
 }
 
