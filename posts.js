@@ -104,20 +104,24 @@ exports.parseBloggerXml = function(xmlFilePath, callback) {
 // if not found, throw an error [to callback]
 exports.findPostByUrl = function(posts, url, callback) {
 
+  // changed: previously got a full URL and stripped parts.
+  //   now client-side JS strips the host, get relative URL.
+  /*
   // strip down URL same as before
   var urlParts = URL.parse(url);
 
   // for already-partial URLs, parsing won't return all parts
   // always want regular protocol
   var url = 'http://' + (!_.isUndefined(urlParts.hostname) ? urlParts.hostname + urlParts.pathname : urlParts.pathname);
-
+  */
   console.log("Looking for " + url);
 
   _(posts).each( function postCheck(post, ind) {
     
     try {
-      if (post.url === url) {
-        
+      // switch to pattern instead of full
+      // if (post.url === url) {
+      if (post.url.indexOf(url) != -1) {
         var ret = {
           'post': post,
           'previous': (!_.isUndefined(posts[ind-1]) ? posts[ind-1] : null),

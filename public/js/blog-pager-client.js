@@ -16,12 +16,25 @@ if (typeof jQuery != "undefined") {
       bloggerPagerLog("Loaded pager script!");
 
       $('.post').each(function(ind, post) {
-        var postUrl = $(post).find('h3.post-title a').attr('href');
+        try {
+          // strip the domain. blogger changes the domain by the user's location.
+          // - first strip the protocol
+          var postUrl = $(post).find('h3.post-title a').attr('href'),
+              postUrlParts = postUrl.split(/:\/\//);
+          postUrl = postUrlParts[1];
+          postUrlParts = postUrl.split(/\//);
+          postUrlParts.shift(); // drop the first part (host)
+          postUrl = '/' + postUrlParts.join('/');
+        }
+        catch(e) {
+          bloggerPagerLog('Unable to parse URL', postUrl);
+          return;
+        }
         bloggerPagerLog('post', ind, postUrl);
 
         if (postUrl == "" || postUrl == null) return;
 
-        var url = 'http://node.benbuck.net:3003/pager?url=' + escape(postUrl);
+        var url = 'http://node.newleafdigital.com:3003/pager?url=' + escape(postUrl);
         bloggerPagerLog('requesting from', url);
 
         $.ajax({
