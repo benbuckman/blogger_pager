@@ -1,6 +1,6 @@
 /* client-side JS */
 
-window.benLog = function() {
+window.bloggerPagerLog = function() {
   // turn on to debug
   return;
 
@@ -13,16 +13,16 @@ window.benLog = function() {
 if (typeof jQuery != "undefined") {
   (function($){
     $(document).ready(function(){
-      benLog("Loaded pager script!");
+      bloggerPagerLog("Loaded pager script!");
 
       $('.post').each(function(ind, post) {
         var postUrl = $(post).find('h3.post-title a').attr('href');
-        benLog('post', ind, postUrl);
+        bloggerPagerLog('post', ind, postUrl);
 
         if (postUrl == "" || postUrl == null) return;
 
         var url = 'http://node.benbuck.net:3003/pager?url=' + escape(postUrl);
-        benLog('requesting from', url);
+        bloggerPagerLog('requesting from', url);
 
         $.ajax({
           url: url,
@@ -31,14 +31,14 @@ if (typeof jQuery != "undefined") {
           timeout: 5000,
 
           success: function(data) {
-            benLog('got data:', data);
+            bloggerPagerLog('got data:', data);
             if (typeof data.next != "undefined" || typeof data.previous != "undefined") {
               addPagerForPost(post, data);
             }
           },
 
           error: function(jqXHR, textStatus, errorThrown) {
-            benLog('error ', textStatus, errorThrown, 'at url:', url);
+            bloggerPagerLog('error ', textStatus, errorThrown, 'at url:', url);
           }
         });
 
@@ -48,12 +48,12 @@ if (typeof jQuery != "undefined") {
   })(jQuery);
 }
 else {
-  benLog("missing jQuery");
+  bloggerPagerLog("missing jQuery");
 }
 
 
 function addPagerForPost(post, data) {
-  benLog('addPagerForPost:', data);
+  bloggerPagerLog('addPagerForPost:', data);
 
   var pager = $('<div></div>');
   pager.addClass('node-pager');
@@ -68,7 +68,7 @@ function addPagerForPost(post, data) {
       + 'next post: <em>' + data.next.title + ' &gt;&gt;</em></a> ');
   }
 
-  benLog('placing pager:', pager);
+  bloggerPagerLog('placing pager:', pager);
 
   $(post).append(pager);
 }
