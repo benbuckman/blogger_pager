@@ -54,17 +54,17 @@
 			XCPager.addPagerForPost = function(postEl, postInfo) {
 			  // XCPager.log('addPagerForPost:', postInfo);
 
-			  var pager = $('<div>').addClass('node-pager');
+			  var pager = $('<div>').addClass('xc-pager');
 			  
 			  if (postInfo.previous) {
-			  	var prevLink = $('<a>').addClass('node-pager-previous')
+			  	var prevLink = $('<a>').addClass('xc-pager-previous')
 			  		.attr('href', postInfo.previous.url)
 			  		.html('&lt;&lt; previous post: <em>' + postInfo.previous.title + '</em>')
 			  		.appendTo(pager);
 			  }
 
 			  if (postInfo.next) {
-			  	var nextLink = $('<a>').addClass('node-pager-next')
+			  	var nextLink = $('<a>').addClass('xc-pager-next')
 			  		.attr('href', postInfo.next.url)
 			  		.html('next post: <em>' + postInfo.next.title + ' &gt;&gt;</em>')
 			  		.appendTo(pager);
